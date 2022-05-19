@@ -1,0 +1,7 @@
+0. Познакомится с описанием систем
+https://docs.google.com/document/d/1I1Q2Mqg7PsYrkMNOdogLBoGKeyoq34-dfJQrUtbBOEM/edit?usp=sharing - github api
+https://docs.google.com/document/d/1jpVzAey3YjtcPI_ujMkVRvC-JKxJAo8bsHyixpfqRnE/edit?usp=sharing - hh api
+1. Выбрать одну из 2-х система какая более интересна, скорее всего с hh будет проще.
+В hh больше аналитики, в github больше работы с текстом;
+2. Реализовать систему. Результатом будет код парсера + файл или несколько файлов с полученными данными;
+3. Сдать проект в виде ссылки на репозиторий + приложить итоговые файлы".
