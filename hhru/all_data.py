@@ -2,6 +2,8 @@
 # Основная цель заключается в сборе требований к вакансиям с использованием заданных ключевых слов,
 # очистке этих данных, а затем анализе частоты встречаемости ключевых слов в требованиях.
 # Результаты сохраняются в JSON файл для дальнейшего анализа.
+# Этот модуль полезен для подготовки данных и анализа требований к вакансиям в автоматическом режиме,
+# что может быть полезно для рекрутеров или аналитиков рынка труда.
 
 # Импортируемые библиотеки
 import json       # Для работы с JSON файлом
@@ -31,6 +33,12 @@ def data_save_txt(data, file):
 
 
 def get_params(keywords, page):
+    '''
+    Формирует словарь параметров для запроса, содержащий ключевые слова и номер страницы.
+    :param keywords: строка ключевых слов для поиска.
+    :param page:  номер страницы для получения результатов.
+    :return: словарь параметров для запроса
+    '''
     params = {}
     params['text'] = keywords
     params['page'] = page
@@ -39,11 +47,23 @@ def get_params(keywords, page):
 
 
 def request_get(url, params):
+    '''
+    Выполняет GET-запрос на заданный URL с указанными параметрами
+    :param url: адрес для запроса.
+    :param params: словарь параметров для запроса.
+    :return: результат запроса
+    '''
     result = requests.get(url, params=params)
     return result
 
 
 def get_requirement_str(url_vacancies, params):
+    '''
+    Получает данные о вакансиях и извлекает требования к ним
+    :param url_vacancies: URL для получения данных о вакансиях
+    :param params: параметры запроса.
+    :return: Возвращает строку с требованиями всех полученных вакансий.
+    '''
     result = request_get(url_vacancies, params)
     j_result = result.json()
     # data_save_json(j_result, 'rez_01.json')
@@ -60,6 +80,11 @@ def get_requirement_str(url_vacancies, params):
     return s_requirement
 
 def str_cliner(s_requirement):
+    '''
+    Очищает строку требований, заменяя определенные подстроки.
+    :param s_requirement: строка требований.
+    :return: Возвращает очищенную строку.
+    '''
     s_requirement = s_requirement.replace('<highlighttext>', '')
     s_requirement = s_requirement.replace('</highlighttext>', '')
     s_requirement = s_requirement.replace('-', '')
@@ -76,6 +101,12 @@ def str_cliner(s_requirement):
 
 
 def parser(keywords, s_requirement):
+    '''
+    Анализирует строку требований, выделяет ключевые слова и считает их частоту.
+    :param keywords: ключевые слова для поиска.
+    :param s_requirement: строка требований.
+    :return: Возвращает словарь с результатами анализа.
+    '''
     all_data = {}
     all_data['keywords'] = keywords
     # выбираем слова через регулярные выражения
@@ -121,17 +152,27 @@ def parser(keywords, s_requirement):
     all_data['requirements'] = requirements
     return all_data
 
-DOMAIN = 'https://api.hh.ru/'
-url_vacancies = f'{DOMAIN}vacancies'
-page = 1
+DOMAIN = 'https://api.hh.ru/'        # базовый URL для API HH.ru
+url_vacancies = f'{DOMAIN}vacancies' # полный URL для получения данных о вакансиях.
+page = 1                             # номер страницы для получения данных
 
-# keywords = 'NAME:(Python) and (AI OR ML OR Keras OR Numpy OR Pandas)'
+# Список ключевых слов для поиска
 keywords_l = ['NAME:(Аналитик) and (ChatGPT)',
         'NAME:(Python) and (ChatGPT)',
         'NAME:(Python) and (AI OR ML)',
         'NAME:(Python OR Java) AND COMPANY_NAME:(1 OR 2 OR YANDEX) AND (DJANGO OR SPRING)']
+
 rez_data = []
 i = 1
+'''
+Основной цикл обработки данных
+    - Итерируется по списку `keywords_l`.
+    - Параметры запроса формируются функцией `get_params`.
+    - Данные о требованиях к вакансиям извлекаются с помощью `get_requirement_str`.
+    - Строка требований очищается с помощью `str_cliner`.
+    - Очищенные данные сохраняются в текстовый файл.
+    - Результаты анализа сохраняются в JSON файл `hhru_rezult.json`.
+'''
 for keywords in keywords_l:
     params = get_params(keywords, page)
     s_requirement = get_requirement_str(url_vacancies, params)
