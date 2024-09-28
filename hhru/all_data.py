@@ -1,15 +1,31 @@
-import json
-import pprint
-import requests
-import re
+# Этот модуль предназначен для извлечения, обработки и анализа данных о вакансиях с сайта HH.ru.
+# Основная цель заключается в сборе требований к вакансиям с использованием заданных ключевых слов,
+# очистке этих данных, а затем анализе частоты встречаемости ключевых слов в требованиях.
+# Результаты сохраняются в JSON файл для дальнейшего анализа.
+
+# Импортируемые библиотеки
+import json       # Для работы с JSON файлом
+import pprint     # Для форматированного вывода на консоль
+import requests   # Для выполнения HTTP-запросов
+import re         # Для работы с регулярными выражениями
 
 
 def data_save_json(data, file):
+    '''
+    Сохраняет данные в JSON файл.
+    :param data: данные для сохранения.
+    :param file: имя файла.
+    '''
     with open(file, 'w', encoding='utf8') as f:
         json.dump(data, f)
 
 
 def data_save_txt(data, file):
+    '''
+    Сохраняет данные в текстовый файл.
+    :param data: данные для сохранения.
+    :param file: имя файла.
+    '''
     with open(file, 'w', encoding='utf8') as f:
         f.write(data)
 
@@ -110,8 +126,10 @@ url_vacancies = f'{DOMAIN}vacancies'
 page = 1
 
 # keywords = 'NAME:(Python) and (AI OR ML OR Keras OR Numpy OR Pandas)'
-keywords_l = ['NAME:(Python) and (AI OR ML)',
-              'NAME:(Python OR Java) AND COMPANY_NAME:(1 OR 2 OR YANDEX) AND (DJANGO OR SPRING)']
+keywords_l = ['NAME:(Аналитик) and (ChatGPT)',
+        'NAME:(Python) and (ChatGPT)',
+        'NAME:(Python) and (AI OR ML)',
+        'NAME:(Python OR Java) AND COMPANY_NAME:(1 OR 2 OR YANDEX) AND (DJANGO OR SPRING)']
 rez_data = []
 i = 1
 for keywords in keywords_l:
