@@ -10,6 +10,8 @@ import json       # Для работы с JSON файлом
 import pprint     # Для форматированного вывода на консоль
 import requests   # Для выполнения HTTP-запросов
 import re         # Для работы с регулярными выражениями
+from loguru import logger # Import logger
+import time
 
 
 def data_save_json(data, file):
@@ -156,34 +158,48 @@ DOMAIN = 'https://api.hh.ru/'        # базовый URL для API HH.ru
 url_vacancies = f'{DOMAIN}vacancies' # полный URL для получения данных о вакансиях.
 page = 1                             # номер страницы для получения данных
 
-# Список ключевых слов для поиска
-keywords_l = ['NAME:(Аналитик) and (ChatGPT)',
-        'NAME:(Python) and (ChatGPT)',
-        'NAME:(Python) and (AI OR ML)',
-        'NAME:(Python OR Java) AND COMPANY_NAME:(1 OR 2 OR YANDEX) AND (DJANGO OR SPRING)']
+def run (keywords_l):
+    '''
+    Основной цикл обработки данных
+        - Итерируется по списку `keywords_l`.
+        - Параметры запроса формируются функцией `get_params`.
+        - Данные о требованиях к вакансиям извлекаются с помощью `get_requirement_str`.
+        - Строка требований очищается с помощью `str_cliner`.
+        - Очищенные данные сохраняются в текстовый файл.
+        - Результаты анализа сохраняются в JSON файл `hhru_rezult.json`.
+    '''
+    rez_data = []
+    i = 1
+    for keywords in keywords_l:
+        params = get_params(keywords, page)
+        s_requirement = get_requirement_str(url_vacancies, params)
+        s_requirement = str_cliner(s_requirement)
+        file_name=f'requirements_{i}.txt'
+        data_save_txt(s_requirement, file_name)
+        data = parser(keywords, s_requirement)
+        rez_data.append(data)
+        i+=1
 
-rez_data = []
-i = 1
-'''
-Основной цикл обработки данных
-    - Итерируется по списку `keywords_l`.
-    - Параметры запроса формируются функцией `get_params`.
-    - Данные о требованиях к вакансиям извлекаются с помощью `get_requirement_str`.
-    - Строка требований очищается с помощью `str_cliner`.
-    - Очищенные данные сохраняются в текстовый файл.
-    - Результаты анализа сохраняются в JSON файл `hhru_rezult.json`.
-'''
-for keywords in keywords_l:
-    params = get_params(keywords, page)
-    s_requirement = get_requirement_str(url_vacancies, params)
-    s_requirement = str_cliner(s_requirement)
-    file_name=f'requirements_{i}.txt'
-    data_save_txt(s_requirement, file_name)
-    data = parser(keywords, s_requirement)
-    rez_data.append(data)
-    i+=1
+    data_save_json(rez_data, 'hhru_rezult.json')
 
-data_save_json(rez_data, 'hhru_rezult.json')
+
+if __name__ == "__main__":
+    logger.add("Log/all_data.log", format="{time} {level} {message}", level="DEBUG", rotation="100 KB",
+               compression="zip")
+    logger.debug('all_data............')
+    start_time = time.time()
+    # Список ключевых слов для поиска
+    keywords_l = ['NAME:(Аналитик OR Бизнес аналитик OR Системный аналитик OR Analyst OR Business Analyst OR System Analyst) '
+                      'and (AI OR ChatGPT)',
+                'NAME:(Аналитик) and (ChatGPT)',
+                'NAME:(Python) and (ChatGPT)',
+                'NAME:(Python) and (AI OR ML)',
+                'NAME:(Python OR Java) AND COMPANY_NAME:(1 OR 2 OR YANDEX) AND (DJANGO OR SPRING)']
+
+    run(keywords_l)
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    logger.debug(f'all_data elapsed_time = {elapsed_time} sec')
 
 
 
