@@ -190,7 +190,7 @@ if __name__ == "__main__":
     start_time = time.time()
     # Список ключевых слов для поиска
     keywords_l = ['NAME:(Аналитик OR Бизнес аналитик OR Системный аналитик OR Analyst OR Business Analyst OR System Analyst) '
-                      'and (AI OR ChatGPT)',
+                      'and (AI OR ChatGPT OR LLM OR prompt OR  openai OR  langchain)',
                 'NAME:(Аналитик) and (ChatGPT)',
                 'NAME:(Python) and (ChatGPT)',
                 'NAME:(Python) and (AI OR ML)',

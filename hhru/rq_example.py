@@ -66,8 +66,7 @@ if __name__ == "__main__":
     # params = {'text': 'NAME:(Python OR AI) and (Django OR Keras)',  'page': 1}
     # params = {'text': 'NAME:(Python) and (AI OR ML OR Keras OR Numpy OR Pandas)', 'page': 1}
     params = {'text': 'NAME:(Аналитик OR Бизнес аналитик OR Системный аналитик OR Analyst OR Business Analyst OR System Analyst) '
-                      'and (AI OR ChatGPT)',
-              'page': 1}
+                      'and (AI OR ChatGPT OR LLM OR prompt OR  openai OR  langchain)'}
     logger.debug(f'params = {params}')
     get_vacancies(params)
 
